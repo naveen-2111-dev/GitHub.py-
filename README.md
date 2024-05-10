@@ -4,24 +4,23 @@
 - python
 
 ## start with
-**1.**
+**1.** initial
 ```
 pip install virtualenv
 ```
 
 ## usage
-**2.**
+**2.** set up env
 ```
 virtualenv <envname>
 ```
 
-**3.**
+**3.** activate env
 ```
 <envname>\Scripts\activate
 ```
 
-**4.**
-- open terminal
+**4.**  open terminal
 ```
 python <script_name.py>
 ```
