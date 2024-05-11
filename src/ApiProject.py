@@ -1,8 +1,9 @@
-import requests
 from tabulate import tabulate
-from pyfiglet import figlet_format
+import Package.ApiCall
+import Package.Profile
+import Package.Text
 
-GitHub_name = figlet_format("G i t h u b . p y")
+GitHub_name = Package.Text.Designtext("G i t h u b . p y")
 def Main():
     while(True):
         print(f"\n \n {GitHub_name} \n")
@@ -14,6 +15,7 @@ def Condition(Choice):
     if (Choice == 1):
         userName = input("enter the Username (Git-Hub): ")
         print(f"\n user: {userName} \n \n")
+        Package.Profile.profile(userName)
         return 1
     
     else:
@@ -27,34 +29,30 @@ def Condition(Choice):
         repoFinder(UName)
 
 def repoFinder(UserName):
-    RepoFinder_Url = f"https://api.github.com/users/{UserName}/repos"
     try:
-        ApiRes = requests.get(RepoFinder_Url)
-        if(ApiRes):
-            repos = ApiRes.json()
-            print("~~~ Repositories ~~~ \n ")
-            for Repo in repos:
-                print(Repo['name'])
-            individual = input("\nwant to view individual repo [name of repo]: ")
-            if individual:
-                IndividualRepo(individual, UserName)
-                return 1
+        repos = Package.ApiCall.Apicall("users",UserName,"","repos")
+        print("~~~ Repositories ~~~ \n ")
+        for Repo in repos:
+            print(Repo['name'])
+        individual = input("\nwant to view individual repo [name of repo]: ")
+        if individual:
+            IndividualRepo(individual, UserName)
             return 1
+        return 1
 
     except Exception as err:
         print(f"\n Error {err}")
 
 def IndividualRepo(repo, username):
     table_data = []
-    indRepo_url = f"https://api.github.com/repos/{username}/{repo}"
 
     try:
-        res = requests.get(indRepo_url).json()
-        if (res):
-            branch = res['default_branch']
-            license = res['license']
+        Url = Package.ApiCall.Apicall("repos", username, repo)
+        if (Url):
+            branch = Url['default_branch']
+            license = Url['license']
             if(license):
-               table_data.append(["license", res['license']])
+               table_data.append(["license", Url['license']])
                return 1
             
             print(f"\n~~~ {repo}[{branch}] ~~~")
@@ -62,11 +60,11 @@ def IndividualRepo(repo, username):
             Stars(repo, username)
             print("\n")
             table_data = [
-                ["Created At", res['created_at']],
-                ["Updated At", res['updated_at']],
-                ["Pushed At", res['pushed_at']],
-                ["Language", res['language']],
-                ["size", res['size']],
+                ["Created At", Url['created_at']],
+                ["Updated At", Url['updated_at']],
+                ["Pushed At", Url['pushed_at']],
+                ["Language", Url['language']],
+                ["size", Url['size']],
             ]
             print(tabulate(table_data, headers=["context", "data"], tablefmt="plain"))
             print(f"\n~~~ contributors of {repo} ~~~\n")
@@ -76,11 +74,10 @@ def IndividualRepo(repo, username):
         print(f"\n error {err}")
 
 def Languages(user,repo):
-    Lang_url = f"https://api.github.com/repos/{user}/{repo}/languages"
     try:
-        response = requests.get(Lang_url).json()
+        response = Package.ApiCall.Apicall("repos",user,repo,"languages")
         if(response):
-            print(f"\nlanuages used in {repo}: \n")
+            print(f"\nlanuages used in {repo}: -")
             for Response in response:
                 print(Response)
 
@@ -92,14 +89,12 @@ def Stars(repo,name):
     namestars = "Null"
     nameArray =[]
     
-    star_url = f"https://api.github.com/repos/{name}/{repo}/stargazers"
     try:
-        response = requests.get(star_url)
+        response = Package.ApiCall.Apicall("repos",name,repo,"stargazers")
         if(response):
-            res = response.json()
             print(f"\n~~~ stars of {repo} ~~~")
             print("\n total stars: ")
-            for Response in res:
+            for Response in response:
                 namestars = Response['login']
                 if(namestars):
                     nameArray.append(namestars)
@@ -113,9 +108,8 @@ def Stars(repo,name):
 def contributors(user,repo):
     Const_Data = []
     const_mainData = []
-    Cont_url = f"https://api.github.com/repos/{user}/{repo}/contributors"
     try:
-        resp = requests.get(Cont_url).json()
+        resp = Package.ApiCall.Apicall("repos", user, repo, "contributors")
         if(resp):
             for response in resp:
                 mainCont = response['login']
