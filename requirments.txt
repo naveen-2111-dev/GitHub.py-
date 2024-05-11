@@ -1,3 +1,4 @@
 requests==2.31.0
 tabulate==0.8.9
 pyfiglet==0.8.post1
+terminal-img==0.0.3
