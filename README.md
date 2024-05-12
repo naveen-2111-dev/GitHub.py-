@@ -48,6 +48,6 @@ git clone repo-url
 **4.** Execute
 
 ## overview
-- its a rest api project
+- its a api project
 - a non-gui interface where we can interact with our github accounts
 - libraries used 🪴terminal-img, 🚀requests, ⚓tabulate, 💌pyfiglet
