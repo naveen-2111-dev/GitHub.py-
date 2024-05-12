@@ -1,4 +1,4 @@
-# Github rest api project 💙
+# Github api project 💙
 
 ## Tech stack
 python
